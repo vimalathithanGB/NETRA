@@ -1,0 +1,12 @@
+{
+  "track_id": 39,
+  "vehicle_class": "truck",
+  "plate_text": "ONDUTY",
+  "plate_status": "tentative",
+  "plate_confidence": 0.9681,
+  "observation_count": 5,
+  "valid_observation_count": 0,
+  "best_ocr_confidence": 0.9681,
+  "first_seen_frame": 90,
+  "last_seen_frame": 131
+}

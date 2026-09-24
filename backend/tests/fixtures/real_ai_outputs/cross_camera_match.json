@@ -1,0 +1,16 @@
+{
+  "camera_a": "CAM_01",
+  "track_a": 1,
+  "camera_b": "CAM_02",
+  "track_b": 2,
+  "reid_similarity": 0.9611,
+  "plate_match": null,
+  "class_match": 1.0,
+  "available_evidence": [
+    "reid",
+    "class"
+  ],
+  "match_score": 0.9667,
+  "threshold": 0.75,
+  "matched": true
+}

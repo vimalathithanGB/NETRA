@@ -1,0 +1,21 @@
+# SIH 2026 AI Engine - Initial Phase 1 Dependencies
+# ----------------------------------------------------
+# NOTE FOR GPU ACCELERATION (NVIDIA GPUs):
+# PyTorch with CUDA support should be installed directly using the official index:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+
+# Core Machine Learning Framework
+torch>=2.2.0
+torchvision>=0.17.0
+
+# Computer Vision & Detection Baseline
+ultralytics>=8.2.0
+opencv-python>=4.9.0
+
+# Data & Configuration Utilities
+numpy>=1.24.0,<2.0.0
+pyyaml>=6.0.1
+tqdm>=4.66.0
+
+# Testing & Verification
+pytest>=8.0.0

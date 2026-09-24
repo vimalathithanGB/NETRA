@@ -1,0 +1,46 @@
+"""Pydantic Schema Registry for NETRA."""
+from app.schemas.ai_contracts import (
+    VehicleTrackInput,
+    CameraTracksIngest,
+    CrossCameraMatchInput,
+    GlobalVehicleInput,
+    TrajectorySegmentInput,
+    TrajectoryInput,
+    RoutePredictionInput,
+    RoutePredictionItemInput,
+    UnifiedAIIngestPayload,
+    IngestResponse,
+)
+from app.schemas.frontend import (
+    CameraCreate,
+    CameraResponse,
+    VehicleDetectionResponse,
+    VehicleTrajectoryResponse,
+    TrafficZone,
+    TrafficIncident,
+    TrafficEventsResponse,
+    PlateCaptureResponse,
+    AlertResponse,
+)
+
+__all__ = [
+    "VehicleTrackInput",
+    "CameraTracksIngest",
+    "CrossCameraMatchInput",
+    "GlobalVehicleInput",
+    "TrajectorySegmentInput",
+    "TrajectoryInput",
+    "RoutePredictionInput",
+    "RoutePredictionItemInput",
+    "UnifiedAIIngestPayload",
+    "IngestResponse",
+    "CameraCreate",
+    "CameraResponse",
+    "VehicleDetectionResponse",
+    "VehicleTrajectoryResponse",
+    "TrafficZone",
+    "TrafficIncident",
+    "TrafficEventsResponse",
+    "PlateCaptureResponse",
+    "AlertResponse",
+]

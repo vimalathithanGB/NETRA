@@ -1,0 +1,33 @@
+# =============================================================================
+# NETRA — Camera Network Configuration (Simulation Environment)
+# =============================================================================
+# NOTE: These coordinates and road names are SIMULATED coordinates used to
+# validate cross-camera trajectory reconstruction, Haversine road distances,
+# travel time estimation, and bearing calculation.
+# They DO NOT represent the physical location of the test video footage.
+# =============================================================================
+
+cameras:
+  CAM_01:
+    camera_id: "CAM_01"
+    latitude: 11.0168
+    longitude: 76.9558
+    road_name: "SIMULATED_ROAD_A"
+    speed_limit_kmh: 40
+    description: "Ingress Corridor Sensor Node (Simulated Junction North)"
+
+  CAM_02:
+    camera_id: "CAM_02"
+    latitude: 11.0192
+    longitude: 76.9581
+    road_name: "SIMULATED_ROAD_B"
+    speed_limit_kmh: 40
+    description: "Mid-Corridor Surveillance Node (Simulated Central Avenue)"
+
+  CAM_03:
+    camera_id: "CAM_03"
+    latitude: 11.0225
+    longitude: 76.9610
+    road_name: "SIMULATED_ROAD_C"
+    speed_limit_kmh: 40
+    description: "Egress Sensor Node (Simulated Junction South)"

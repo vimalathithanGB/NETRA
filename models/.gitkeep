@@ -1,0 +1,2 @@
+# Model weights and checkpoints repository (.pt, .onnx, .engine)
+# Large files are ignored by git; place weights in this directory.

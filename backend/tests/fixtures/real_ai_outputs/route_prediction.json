@@ -1,0 +1,18 @@
+{
+  "global_vehicle_id": "GV_000002",
+  "current_camera": "CAM_01",
+  "vehicle_class": "bus",
+  "prediction_available": true,
+  "predictions": [
+    {
+      "next_camera": "CAM_02",
+      "probability": 0.6667,
+      "observed_historical_transitions": 6
+    },
+    {
+      "next_camera": "CAM_03",
+      "probability": 0.3333,
+      "observed_historical_transitions": 3
+    }
+  ]
+}

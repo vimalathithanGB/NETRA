@@ -1,0 +1,37 @@
+{
+  "global_vehicle_id": "GV_000001",
+  "vehicle_class": "bus",
+  "plate_text": null,
+  "camera_sequence": [
+    "CAM_01",
+    "CAM_02",
+    "CAM_03"
+  ],
+  "total_distance_meters": 850.98,
+  "total_travel_time_seconds": 5.072,
+  "average_speed_kmh": 604.04,
+  "segments": [
+    {
+      "global_vehicle_id": "GV_000001",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "from_timestamp": "2026-01-01T09:30:00.033367",
+      "to_timestamp": "2026-01-01T09:30:02.569233",
+      "distance_meters": 366.38,
+      "cumulative_distance_meters": 366.38,
+      "travel_time_seconds": 2.536,
+      "average_speed_kmh": 520.13,
+      "speed_limit_kmh": 40.0,
+      "minimum_feasible_time_seconds": 32.974,
+      "travel_time_feasible": false,
+      "bearing_degrees": 43.25,
+      "direction": "NE",
+      "match_score": 0.9667,
+      "reid_similarity": 0.9611,
+      "available_evidence": [
+        "reid",
+        "class"
+      ]
+    }
+  ]
+}

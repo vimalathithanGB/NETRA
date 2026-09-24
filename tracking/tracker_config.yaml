@@ -1,0 +1,41 @@
+# SIH 2026 AI Engine - Phase 5A: ByteTrack Tracking Configuration
+# ==============================================================================
+# Architecture: High-Performance Multi-Stage Association with Kalman Motion Filter
+# Optimized for: Dense Urban Traffic Surveillance & RTX 3050 4GB Execution
+# ==============================================================================
+
+tracker_type: bytetrack # Underlying tracker algorithm engine (bytetrack)
+
+# ------------------------------------------------------------------------------
+# 1. Detection Association Thresholds
+# ------------------------------------------------------------------------------
+# First-stage matching threshold: Detections with confidence >= track_high_thresh
+# are prioritized for association with existing tracks using Kalman motion prediction.
+track_high_thresh: 0.40
+
+# Second-stage matching threshold: Detections with confidence in [track_low_thresh, track_high_thresh)
+# are tested against unmatched active tracks. This is ByteTrack's key innovation:
+# recovering true vehicles that are partially occluded or blurred without introducing background noise.
+track_low_thresh: 0.10
+
+# Threshold to initialize a new track: Unmatched detections must have confidence >= new_track_thresh
+# to initiate a brand-new vehicle track ID. This prevents ephemeral false positives from creating tracks.
+new_track_thresh: 0.45
+
+# ------------------------------------------------------------------------------
+# 2. Track Lifecycle & Motion Memory
+# ------------------------------------------------------------------------------
+# Number of consecutive frames to keep a 'lost' track alive in memory before permanent removal.
+# At 30 FPS, 30 frames = 1.0 second of occlusion tolerance (e.g. passing behind trees, pillars, or large trucks).
+track_buffer: 30
+
+# ------------------------------------------------------------------------------
+# 3. Spatial Association Metric
+# ------------------------------------------------------------------------------
+# IoU (Intersection over Union) similarity cost threshold for the Hungarian matching algorithm.
+# Detections and predicted track positions must have IoU >= match_thresh (or distance <= 1 - match_thresh).
+match_thresh: 0.80
+
+# Whether to fuse detection confidence score with spatial motion similarity during matching.
+# Stabilizes tracking for fast-moving motorcycles and decelerating buses.
+fuse_score: True

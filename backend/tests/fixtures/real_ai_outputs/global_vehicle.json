@@ -1,0 +1,20 @@
+{
+  "global_vehicle_id": "GV_000001",
+  "vehicle_class": "bus",
+  "observations": [
+    {
+      "camera_id": "CAM_01",
+      "track_id": 1
+    },
+    {
+      "camera_id": "CAM_02",
+      "track_id": 2
+    },
+    {
+      "camera_id": "CAM_03",
+      "track_id": 2
+    }
+  ],
+  "plate_text": null,
+  "match_confidence": 0.9082
+}

@@ -1,0 +1,62 @@
+# =====================================================================
+# SIH 2026 Multi-Camera Traffic Surveillance AI Engine Configuration
+# =====================================================================
+
+project:
+  name: "SIH2026-AI-ENGINE"
+  version: "0.1.0"
+  description: "Multi-Camera Traffic Surveillance & Vehicle Re-ID AI Engine"
+
+# Global Hardware Settings
+hardware:
+  device: "cuda"          # Options: "cuda" or "cpu"
+  fp16: true              # Use half-precision inference for memory & speed
+  num_workers: 2          # Dataloader workers
+
+# Camera Ingestion Configuration
+cameras:
+  cam_01:
+    id: "cam_01"
+    name: "Intersection_North"
+    source: "datasets/sample_cam01.mp4"   # Local video or RTSP URL: rtsp://...
+    fps: 30
+  cam_02:
+    id: "cam_02"
+    name: "Intersection_South"
+    source: "datasets/sample_cam02.mp4"
+    fps: 30
+
+# Detection Settings (Phase 2)
+detection:
+  vehicle_model: "models/yolov8n.pt"
+  plate_model: "models/yolov8n-plate.pt"
+  confidence_threshold: 0.40
+  iou_threshold: 0.50
+  target_classes: [2, 3, 5, 7]   # COCO: car, motorcycle, bus, truck
+
+# OCR Settings (Phase 3)
+ocr:
+  engine: "paddleocr"     # Options: "paddleocr"
+  lang: "en"
+  confidence_threshold: 0.65
+
+# Tracking Settings (Phase 4)
+tracking:
+  tracker_type: "bytetrack"       # Options: "bytetrack", "botsort"
+  track_high_thresh: 0.5
+  track_low_thresh: 0.1
+  new_track_thresh: 0.6
+  track_buffer: 30
+  match_thresh: 0.8
+
+# Vehicle Re-Identification Settings (Phase 5)
+reid:
+  model_name: "osnet_x0_25"
+  weights: "models/osnet_x0_25.pth"
+  similarity_threshold: 0.70
+  metric: "cosine"
+
+# Trajectory & Spatio-Temporal Association (Phase 6)
+trajectory:
+  max_time_delta_seconds: 60.0    # Maximum allowable transit time between adjacent cameras
+  min_spatial_distance: 10.0

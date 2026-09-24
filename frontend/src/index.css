@@ -1,0 +1,362 @@
+@layer base {
+  *, ::before, ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    overscroll-behavior: none;
+    font-family: 'Public Sans', 'Noto Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #071c36;
+    background-color: #f4f7fb;
+    background-image: url('/bg.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+:root {
+  --primary: #001e40;
+  --primary-container: #003366;
+  --primary-light: #0057b8;
+  --on-primary: #ffffff;
+  --on-primary-container: #90b4e8;
+  
+  --gov-blue: #003366;
+  --gov-navy: #001e40;
+  --gov-sky: #00677d;
+  
+  --secondary: #00677d;
+  --secondary-container: #e0f7fe;
+  --on-secondary-container: #005c70;
+  --secondary-fixed: #b3ebff;
+  
+  --tertiary: #138808;
+  --tertiary-container: #e8f5e9;
+  --on-tertiary-container: #0d6e03;
+  
+  --saffron: #ff7a1a;
+  --saffron-light: #ff9933;
+  --saffron-container: #fff4ea;
+  
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  
+  --surface: #f4f7fb;
+  --surface-bright: #ffffff;
+  --surface-dim: #c8dbfe;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f0f4f9;
+  --surface-container: #e7eeff;
+  --surface-container-high: #dee8ff;
+  --surface-container-highest: #d6e3ff;
+  
+  --outline: #737780;
+  --outline-variant: #d0dbe7;
+  
+  --on-surface: #071c36;
+  --on-surface-variant: #43474f;
+  
+  --font-heading: 'Public Sans', 'Inter', sans-serif;
+  --font-body: 'Noto Sans', 'Public Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --gov-border: 1px solid #d0dbe7;
+  --gov-card-radius: 8px;
+  --gov-btn-radius: 6px;
+}
+
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+}
+
+.material-symbols-outlined.fill-1 {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+/* Indian National Tricolor Thin Line */
+.tricorn-ribbon {
+  background: linear-gradient(90deg, #ff7a1a 0%, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%, #0d6e03 100%);
+}
+
+.tricolor-stripe {
+  display: flex;
+  width: 100%;
+  height: 3px;
+}
+
+.tricolor-stripe .saffron {
+  background-color: #ff9933;
+  width: 33.33%;
+  height: 100%;
+}
+
+.tricolor-stripe .white {
+  background-color: #ffffff;
+  width: 33.34%;
+  height: 100%;
+}
+
+.tricolor-stripe .green {
+  background-color: #138808;
+  width: 33.33%;
+  height: 100%;
+}
+
+/* Government Tech Network Background */
+.gov-portal-bg {
+  background-color: #f4f7fb;
+  background-image: url('/bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Responsive adjustments for background */
+@media (max-width: 768px) {
+  body, .gov-portal-bg {
+    background-attachment: scroll;
+    background-position: center top;
+  }
+}
+
+/* Container & Grid utilities */
+.container-gov, .container-7xl {
+  max-width: 82rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .container-gov, .container-7xl {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Dashboard Layout Grids */
+.dashboard-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-main-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-telemetry-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Keyframe animations */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 180s linear infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.92); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* High Contrast Mode */
+[data-contrast="high"] {
+  --primary: #000000;
+  --primary-container: #000000;
+  --gov-blue: #000000;
+  --on-surface: #000000;
+  --surface: #ffffff;
+  --surface-bright: #ffffff;
+  --outline-variant: #000000;
+  filter: contrast(1.15);
+}
+
+[data-contrast="high"] body,
+[data-contrast="high"] .gov-portal-bg {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* Font scale classes */
+.font-scale-sm { font-size: 0.9em; }
+.font-scale-md { font-size: 1em; }
+.font-scale-lg { font-size: 1.1em; }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Leaflet GIS Custom Styles for NETRA */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: 'Public Sans', 'Inter', -apple-system, sans-serif;
+  z-index: 1;
+  background: #f8fafc;
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 30, 60, 0.2), 0 8px 10px -6px rgba(0, 30, 60, 0.1);
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: none;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 30, 60, 0.1) !important;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  color: #003366 !important;
+  background-color: #ffffff !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-weight: 700 !important;
+}
+
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Custom Marker styles */
+.gis-marker-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.gis-marker-pin:hover {
+  transform: scale(1.18);
+  z-index: 1000 !important;
+}
+
+/* Vehicle Tracking GIS responsive layout */
+.tracking-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .tracking-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .tracking-grid-map,
+  .tracking-grid-sidebar {
+    grid-column: span 12 !important;
+  }
+}
+
+

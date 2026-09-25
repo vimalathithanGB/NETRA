@@ -6,18 +6,22 @@ import pytest
 FRONTEND_BASE = "http://localhost:5173"
 
 
-def _is_frontend_running() -> bool:
+def _is_live_stack_running() -> bool:
     try:
-        req = urllib.request.Request(f"{FRONTEND_BASE}/")
-        with urllib.request.urlopen(req, timeout=1) as resp:
+        req_fe = urllib.request.Request(f"{FRONTEND_BASE}/")
+        with urllib.request.urlopen(req_fe, timeout=1) as resp:
+            if resp.status != 200:
+                return False
+        req_be = urllib.request.Request("http://127.0.0.1:8000/health")
+        with urllib.request.urlopen(req_be, timeout=1) as resp:
             return resp.status == 200
     except Exception:
         return False
 
 
 pytestmark = pytest.mark.skipif(
-    not _is_frontend_running(),
-    reason="Frontend Vite dev server is not running on http://localhost:5173",
+    not _is_live_stack_running(),
+    reason="Frontend Vite dev server (5173) or Backend (8000) is not running",
 )
 
 

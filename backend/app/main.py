@@ -9,6 +9,7 @@ from app.api.v1.traffic import router as traffic_router
 from app.api.v1.plates import router as plates_router
 from app.api.v1.alerts import router as alerts_router
 from app.api.v1.analytics import router as analytics_router
+from app.api.v1.video_testing import router as video_testing_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -55,6 +56,7 @@ compat_router.include_router(traffic_router)
 compat_router.include_router(plates_router)
 compat_router.include_router(alerts_router)
 compat_router.include_router(analytics_router)
+compat_router.include_router(video_testing_router)
 app.include_router(compat_router)
 
 

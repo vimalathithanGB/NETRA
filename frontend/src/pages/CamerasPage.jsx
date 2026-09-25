@@ -1,28 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { cameraNodes } from '../data/mockData';
 import { getCameras } from '../services/gisService';
 
 export default function CamerasPage() {
   const [selectedCorridor, setSelectedCorridor] = useState('All Corridors');
-  const [camList, setCamList] = useState(cameraNodes);
-  const [activeCam, setActiveCam] = useState(cameraNodes[0]);
+  const [camList, setCamList] = useState([]);
+  const [activeCam, setActiveCam] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch verified camera records from PostgreSQL via FastAPI backend
   useEffect(() => {
-    getCameras().then((data) => {
-      if (data && data.length > 0) {
-        const mapped = data.map((c) => ({
-          id: c.id,
-          location: c.locationName || c.name || `Node ${c.id}`,
-          fps: c.fps || 60,
-          status: c.status === 'online' ? 'Active' : c.status === 'warning' ? 'Degraded' : 'Offline',
-          latency: '4ms',
-          edgeModel: 'YOLO-v11-MoRTH'
-        }));
-        setCamList(mapped);
-        setActiveCam(mapped[0]);
-      }
-    });
+    getCameras()
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped = data.map((c) => ({
+            id: c.id,
+            name: c.name || `Camera ${c.id}`,
+            location: c.locationName || c.location_name || c.name || `Node ${c.id}`,
+            roadName: c.roadName || c.road_name || 'Corridor Link',
+            fps: c.fps || 60,
+            status: c.status === 'online' ? 'Active' : c.status === 'warning' ? 'Degraded' : 'Offline',
+            latency: '< 10ms',
+            edgeModel: 'NETRA-YOLO-v11',
+            speedLimitKmh: c.speedLimitKmh || c.speed_limit_kmh || 40,
+            latitude: c.latitude,
+            longitude: c.longitude,
+            vehicleCount: c.vehicleCount ?? 0,
+            lastDetection: c.lastDetection || 'Active'
+          }));
+          setCamList(mapped);
+          setActiveCam(mapped[0]);
+        }
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.warn('Cameras load exception:', err);
+        setIsLoading(false);
+      });
   }, []);
+
+  // Compute dynamic corridor filters from real camera records
+  const uniqueCorridors = [
+    'All Corridors',
+    ...Array.from(new Set(camList.map((c) => c.roadName).filter(Boolean)))
+  ];
+
+  const filteredCameras = selectedCorridor === 'All Corridors'
+    ? camList
+    : camList.filter((c) => c.roadName === selectedCorridor);
 
   return (
     <div style={{ padding: '1.5rem 2rem' }}>
@@ -55,10 +79,11 @@ export default function CamerasPage() {
               outline: 'none'
             }}
           >
-            <option>All Corridors (Coimbatore Urban)</option>
-            <option>Avinashi Road Express Corridor (CAM_01)</option>
-            <option>Gandhipuram Central Arterial (CAM_02)</option>
-            <option>Sathy Road North Corridor (CAM_03)</option>
+            {uniqueCorridors.map((corridor) => (
+              <option key={corridor} value={corridor}>
+                {corridor}
+              </option>
+            ))}
           </select>
 
           <span style={{
@@ -74,186 +99,220 @@ export default function CamerasPage() {
             fontWeight: 700
           }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '9999px', backgroundColor: '#059669' }} className="animate-pulse-subtle" />
-            <span>1,428 Feeds Streaming</span>
+            <span>{camList.length} Active Feeds</span>
           </span>
         </div>
       </div>
 
-      {/* Grid: Main Selected Video Stream + Camera List */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.25rem' }}>
-        {/* Left 8 Cols: Main Active Feed Preview */}
+      {isLoading ? (
         <div style={{
-          gridColumn: 'span 8',
           backgroundColor: '#ffffff',
           borderRadius: '8px',
           border: '1px solid #d0dbe7',
-          overflow: 'hidden',
-          boxShadow: '0 2px 6px rgba(0, 30, 60, 0.04)'
+          padding: '3rem',
+          textAlign: 'center',
+          color: '#64748b'
         }}>
-          {/* Feed Header */}
+          Connecting to NETRA Video Matrix &amp; Camera Records...
+        </div>
+      ) : activeCam ? (
+        /* Grid: Main Selected Video Stream + Camera List */
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.25rem' }}>
+          {/* Left 8 Cols: Main Active Feed Preview */}
           <div style={{
-            padding: '10px 16px',
-            backgroundColor: '#0a192f',
-            color: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: '12px'
+            gridColumn: 'span 8',
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            border: '1px solid #d0dbe7',
+            overflow: 'hidden',
+            boxShadow: '0 2px 6px rgba(0, 30, 60, 0.04)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '9999px', backgroundColor: '#ef4444' }} className="animate-pulse-subtle" />
-              <strong style={{ fontFamily: 'var(--font-mono)' }}>{activeCam.id}</strong>
-              <span style={{ color: '#94a3b8' }}>•</span>
-              <span>{activeCam.location}</span>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#94a3b8' }}>
-              <span>FPS: <strong style={{ color: '#4ade80' }}>{activeCam.fps}</strong></span>
-              <span>Latency: <strong style={{ color: '#38bdf8' }}>{activeCam.latency}</strong></span>
-              <span style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: '2px 6px', borderRadius: '4px', color: '#ffffff' }}>
-                {activeCam.edgeModel}
-              </span>
-            </div>
-          </div>
-
-          {/* Simulated Live Camera Canvas with HUD Overlays */}
-          <div style={{
-            position: 'relative',
-            height: '420px',
-            backgroundColor: '#0f172a',
-            backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDocl6ay--j8pqhOmgC9HCjTlFmbxdsck5CVgGzxg7wplMwgxTZTRHrMjvXgL30117PMsVWFTADJrFtAwELPQB8rlYvc6rN3MybElQcwXdXQ6duazVfOzZ2ClifjYbMrh7N1EV5BoOSMzwTzUSog2sVwrsw6K-5oaWPFqBa2pjIpcj6CNzp1wZNmf7WuGo3SgiZBdkiAM1FbyMO2EGpB8toMnaf7_H6YRYV2OQPB9tFdh961ZmwEbeoww')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}>
-            {/* Dark optical vignette */}
-            <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0, 20, 40, 0.35)' }} />
-
-            {/* Top HUD Overlay */}
+            {/* Feed Header */}
             <div style={{
-              position: 'absolute',
-              top: '12px',
-              left: '12px',
-              backgroundColor: 'rgba(10, 25, 47, 0.85)',
-              backdropFilter: 'blur(6px)',
-              padding: '6px 12px',
-              borderRadius: '4px',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              padding: '10px 16px',
+              backgroundColor: '#0a192f',
               color: '#ffffff',
-              fontSize: '11px',
-              fontFamily: 'var(--font-mono)'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '12px'
             }}>
-              <div>REC ● LIVE OPTICAL STREAM</div>
-              <div style={{ color: '#38bdf8', fontSize: '10px' }}>GRID-SEC-04 | CAM-ENC-H265</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '9999px', backgroundColor: '#ef4444' }} className="animate-pulse-subtle" />
+                <strong style={{ fontFamily: 'var(--font-mono)' }}>{activeCam.id}</strong>
+                <span style={{ color: '#94a3b8' }}>•</span>
+                <span>{activeCam.location}</span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#94a3b8' }}>
+                <span>FPS: <strong style={{ color: '#4ade80' }}>{activeCam.fps}</strong></span>
+                <span>Limit: <strong style={{ color: '#38bdf8' }}>{activeCam.speedLimitKmh} km/h</strong></span>
+                <span style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: '2px 6px', borderRadius: '4px', color: '#ffffff' }}>
+                  {activeCam.edgeModel}
+                </span>
+              </div>
             </div>
 
-            {/* AI Object Detection Bounding Box Overlays */}
+            {/* Live Camera Canvas with HUD Overlays */}
             <div style={{
-              position: 'absolute',
-              top: '38%',
-              left: '42%',
-              width: '120px',
-              height: '75px',
-              border: '2px solid #22c55e',
-              backgroundColor: 'rgba(34, 197, 94, 0.1)',
-              borderRadius: '3px'
+              position: 'relative',
+              height: '420px',
+              backgroundColor: '#0f172a',
+              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDocl6ay--j8pqhOmgC9HCjTlFmbxdsck5CVgGzxg7wplMwgxTZTRHrMjvXgL30117PMsVWFTADJrFtAwELPQB8rlYvc6rN3MybElQcwXdXQ6duazVfOzZ2ClifjYbMrh7N1EV5BoOSMzwTzUSog2sVwrsw6K-5oaWPFqBa2pjIpcj6CNzp1wZNmf7WuGo3SgiZBdkiAM1FbyMO2EGpB8toMnaf7_H6YRYV2OQPB9tFdh961ZmwEbeoww')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
             }}>
-              <span style={{
+              {/* Dark optical vignette */}
+              <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0, 20, 40, 0.35)' }} />
+
+              {/* Top HUD Overlay */}
+              <div style={{
                 position: 'absolute',
-                top: '-18px',
-                left: '-1px',
-                backgroundColor: '#22c55e',
+                top: '12px',
+                left: '12px',
+                backgroundColor: 'rgba(10, 25, 47, 0.85)',
+                backdropFilter: 'blur(6px)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
                 color: '#ffffff',
-                fontSize: '9.5px',
-                fontWeight: 700,
-                padding: '1px 5px',
-                borderRadius: '2px',
+                fontSize: '11px',
                 fontFamily: 'var(--font-mono)'
               }}>
-                Sedan 99.4%
+                <div>REC ● LIVE OPTICAL STREAM</div>
+                <div style={{ color: '#38bdf8', fontSize: '10px' }}>
+                  NODE: {activeCam.id} | CORRIDOR: {activeCam.roadName}
+                </div>
+              </div>
+
+              {/* Bottom Real-time Stream Status — Prepared for dynamic AI bounding boxes */}
+              <div style={{
+                position: 'absolute',
+                bottom: '12px',
+                left: '12px',
+                right: '12px',
+                backgroundColor: 'rgba(10, 25, 47, 0.85)',
+                backdropFilter: 'blur(6px)',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+                color: '#e2e8f0',
+                fontSize: '11px',
+                fontFamily: 'var(--font-mono)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '9999px', backgroundColor: '#22c55e' }} className="animate-pulse-subtle" />
+                  <span>STREAM READY FOR NODE {activeCam.id} ({activeCam.roadName})</span>
+                </div>
+                <div style={{ color: '#94a3b8', fontSize: '10.5px' }}>
+                  COORDS: {activeCam.latitude?.toFixed(4)}°N, {activeCam.longitude?.toFixed(4)}°E
+                </div>
+              </div>
+            </div>
+
+            {/* Camera Metadata Telemetry Strip */}
+            <div style={{
+              padding: '12px 16px',
+              backgroundColor: '#f8fafc',
+              borderTop: '1px solid #e2e8f0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '12px',
+              color: '#475569',
+              flexWrap: 'wrap',
+              gap: '8px'
+            }}>
+              <div>
+                <strong>Road Corridor:</strong> {activeCam.roadName}
+              </div>
+              <div>
+                <strong>Speed Limit:</strong> {activeCam.speedLimitKmh} km/h
+              </div>
+              <div>
+                <strong>Optical Status:</strong> <span style={{ color: '#16a34a', fontWeight: 700 }}>{activeCam.status}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right 4 Cols: Real Backend Camera Matrix List */}
+          <div style={{
+            gridColumn: 'span 4',
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            border: '1px solid #d0dbe7',
+            padding: '1rem',
+            boxShadow: '0 2px 6px rgba(0, 30, 60, 0.04)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#001e40' }}>
+                Select Active Camera Node
+              </div>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>
+                {filteredCameras.length} Nodes
               </span>
             </div>
 
-            <div style={{
-              position: 'absolute',
-              top: '52%',
-              left: '60%',
-              width: '140px',
-              height: '95px',
-              border: '2px solid #38bdf8',
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
-              borderRadius: '3px'
-            }}>
-              <span style={{
-                position: 'absolute',
-                top: '-18px',
-                left: '-1px',
-                backgroundColor: '#0284c7',
-                color: '#ffffff',
-                fontSize: '9.5px',
-                fontWeight: 700,
-                padding: '1px 5px',
-                borderRadius: '2px',
-                fontFamily: 'var(--font-mono)'
-              }}>
-                Commercial Truck 98.8%
-              </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '460px', overflowY: 'auto' }}>
+              {filteredCameras.map((node) => {
+                const isSelected = activeCam && activeCam.id === node.id;
+                return (
+                  <div
+                    key={node.id}
+                    onClick={() => setActiveCam(node)}
+                    style={{
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      border: `1px solid ${isSelected ? '#003366' : '#e2e8f0'}`,
+                      backgroundColor: isSelected ? '#f0f4f9' : '#ffffff',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '11.5px', color: '#003366' }}>
+                        {node.id}
+                      </span>
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        color: node.status === 'Active' ? '#166534' : '#92400e',
+                        backgroundColor: node.status === 'Active' ? '#dcfce7' : '#fef3c7',
+                        padding: '1px 5px',
+                        borderRadius: '3px'
+                      }}>
+                        {node.status}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#475569', marginTop: '2px' }}>
+                      {node.location}
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '1px' }}>
+                      Corridor: {node.roadName}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
-
-        {/* Right 4 Cols: Camera Matrix List */}
+      ) : (
         <div style={{
-          gridColumn: 'span 4',
           backgroundColor: '#ffffff',
           borderRadius: '8px',
           border: '1px solid #d0dbe7',
-          padding: '1rem',
-          boxShadow: '0 2px 6px rgba(0, 30, 60, 0.04)'
+          padding: '3rem',
+          textAlign: 'center',
+          color: '#64748b'
         }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#001e40', marginBottom: '8px' }}>
-            Select Active Camera Node
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '420px', overflowY: 'auto' }}>
-            {camList.map((node) => {
-              const isSelected = activeCam && activeCam.id === node.id;
-              return (
-                <div
-                  key={node.id}
-                  onClick={() => setActiveCam(node)}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    border: `1px solid ${isSelected ? '#003366' : '#e2e8f0'}`,
-                    backgroundColor: isSelected ? '#f0f4f9' : '#ffffff',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '11.5px', color: '#003366' }}>
-                      {node.id}
-                    </span>
-                    <span style={{
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      color: node.status === 'Active' ? '#166534' : '#92400e',
-                      backgroundColor: node.status === 'Active' ? '#dcfce7' : '#fef3c7',
-                      padding: '1px 5px',
-                      borderRadius: '3px'
-                    }}>
-                      {node.status}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '2px' }}>
-                    {node.location}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          No active camera nodes found in grid database.
         </div>
-      </div>
+      )}
     </div>
   );
 }

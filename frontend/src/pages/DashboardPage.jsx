@@ -636,7 +636,7 @@ export default function DashboardPage({ onAddNotification, setRoute }) {
               <span>Pending Review</span>
               <button
                 type="button"
-                onClick={() => setRoute && setRoute('reports')}
+                onClick={() => setRoute && setRoute('/tracking')}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -647,7 +647,7 @@ export default function DashboardPage({ onAddNotification, setRoute }) {
                   padding: 0
                 }}
               >
-                View Incident Log →
+                View Incident Tracking →
               </button>
             </div>
           </div>
@@ -1324,7 +1324,7 @@ export default function DashboardPage({ onAddNotification, setRoute }) {
               <span>Showing real database sightings</span>
               <button
                 type="button"
-                onClick={() => setRoute && setRoute('telemetry')}
+                onClick={() => setRoute && setRoute('/anpr')}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -1761,7 +1761,7 @@ export default function DashboardPage({ onAddNotification, setRoute }) {
             </div>
             <button
               type="button"
-              onClick={() => setRoute && setRoute('alerts')}
+              onClick={() => setRoute && setRoute('/tracking')}
               style={{
                 padding: '6px 12px',
                 borderRadius: '6px',
@@ -1773,7 +1773,7 @@ export default function DashboardPage({ onAddNotification, setRoute }) {
                 cursor: 'pointer'
               }}
             >
-              Manage All Alerts ({alerts.length}) →
+              View Trajectory Map →
             </button>
           </div>
 

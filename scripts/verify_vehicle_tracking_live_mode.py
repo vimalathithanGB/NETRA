@@ -293,7 +293,7 @@ This report certifies the successful refactoring of the NETRA Vehicle Tracking s
 
 The interface now operates strictly across two verified operational states:
 - **State 1: Initial Page State (Before Vehicle Search)**: Displays the configured multi-camera surveillance grid ({discovered['total_cameras']} cameras), real camera operational statuses (`online`, `offline`, `degraded`), real traffic event/incident markers, and alert summaries. Zero fake vehicles or trajectories are rendered.
-- **State 2: After Vehicle Search / Live Tracking**: Implements an explicit 6-state machine (`IDLE`, `SEARCHING`, `FOUND`, `NO_DETECTION`, `MONITORING`, `ERROR`), real vehicle identity confirmation, camera highlighting (`CAM_XX ✓`), observed camera transition polyline (strictly when $\ge 2$ camera detections exist; single detection displays `1 CAMERA DETECTION` with no route), chronological checkpoint audit trail, live 7-second polling with deduplication and `NEW` badges, and a complete `Clear Tracking` action.
+- **State 2: After Vehicle Search / Live Tracking**: Implements an explicit 6-state machine (`IDLE`, `SEARCHING`, `FOUND`, `NO_DETECTION`, `MONITORING`, `ERROR`), real vehicle identity confirmation, camera highlighting (`CAM_XX ✓`), observed camera transition polyline (strictly when >= 2 camera detections exist; single detection displays `1 CAMERA DETECTION` with no route), chronological checkpoint audit trail, live 7-second polling with deduplication and `NEW` badges, and a complete `Clear Tracking` action.
 
 ---
 

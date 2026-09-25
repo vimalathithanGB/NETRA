@@ -3,13 +3,10 @@ import React from 'react';
 export default function Navigation({ currentRoute, setRoute }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { id: 'analytics', label: 'Analytics', icon: 'analytics' },
-    { id: 'tracking', label: 'Vehicle Tracking', icon: 'radar' },
+    { id: 'cameras', label: 'Live Cameras', icon: 'videocam' },
     { id: 'anpr', label: 'ANPR Detection', icon: 'document_scanner' },
-    { id: 'traffic-intel', label: 'Traffic Intelligence', icon: 'traffic' },
-    { id: 'reports', label: 'Reports', icon: 'assignment' },
-    { id: 'camera-mgmt', label: 'Camera Management', icon: 'videocam' },
-    { id: 'login', label: 'Auth Portal', icon: 'lock' }
+    { id: 'tracking', label: 'Vehicle Tracking', icon: 'radar' },
+    { id: 'video-testing', label: 'Live Video Testing', icon: 'smart_display' }
   ];
 
   return (

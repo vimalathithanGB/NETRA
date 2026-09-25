@@ -17,6 +17,7 @@ from app.api.v1.traffic import router as traffic_router
 from app.api.v1.plates import router as plates_router
 from app.api.v1.alerts import router as alerts_router
 from app.api.v1.analytics import router as analytics_router
+from app.api.v1.video_testing import router as video_testing_router
 
 api_router = APIRouter()
 
@@ -36,6 +37,7 @@ def get_api_v1_status():
             "trajectories": "ready",
             "analytics": "ready",
             "alerts": "ready",
+            "video_testing": "ready",
         }
 
     }
@@ -49,4 +51,5 @@ api_router.include_router(traffic_router)
 api_router.include_router(plates_router)
 api_router.include_router(alerts_router)
 api_router.include_router(analytics_router)
+api_router.include_router(video_testing_router)
 

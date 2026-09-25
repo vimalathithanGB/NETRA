@@ -6,11 +6,7 @@ export default function Sidebar({ currentRoute, setRoute, currentOfficer, onLogo
     { path: '/cameras', label: 'Live Cameras', icon: 'videocam' },
     { path: '/anpr', label: 'ANPR Detection', icon: 'document_scanner' },
     { path: '/tracking', label: 'Vehicle Tracking', icon: 'radar' },
-    { path: '/analytics', label: 'Traffic Analytics', icon: 'analytics' },
-    { path: '/alerts', label: 'Alerts & Violations', icon: 'warning', badge: '14' },
-    { path: '/reports', label: 'Reports', icon: 'assignment' },
-    { path: '/cameras-management', label: 'Camera Management', icon: 'settings_suggest' },
-    { path: '/settings', label: 'Settings', icon: 'settings' }
+    { path: '/video-testing', label: 'Live Video Testing', icon: 'smart_display' }
   ];
 
   return (
@@ -23,7 +19,9 @@ export default function Sidebar({ currentRoute, setRoute, currentOfficer, onLogo
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
-      minHeight: '100vh',
+      height: '100vh',
+      overflowY: 'auto',
+      overflowX: 'hidden',
       zIndex: 40,
       flexShrink: 0
     }}>

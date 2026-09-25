@@ -5,35 +5,29 @@ import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import Modals from './components/Modals';
 
-// Pages
+// Approved Active Modules
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import CamerasPage from './pages/CamerasPage';
 import AnprPage from './pages/AnprPage';
 import TrackingPage from './pages/TrackingPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import AlertsPage from './pages/AlertsPage';
-import ReportsPage from './pages/ReportsPage';
-import TelemetryPage from './pages/TelemetryPage';
-import SettingsPage from './pages/SettingsPage';
+import LiveVideoTestingPage from './pages/LiveVideoTestingPage';
+
+const VALID_ROUTES = [
+  '/login',
+  '/dashboard',
+  '/cameras',
+  '/anpr',
+  '/tracking',
+  '/video-testing',
+  '/live-video-testing'
+];
 
 export default function App() {
-  // Determine initial route: Default to /login
+  // Determine initial route: Default to /login unless authenticated to valid route
   const getInitialRoute = () => {
     const path = window.location.pathname;
-    const validRoutes = [
-      '/login',
-      '/dashboard',
-      '/cameras',
-      '/anpr',
-      '/tracking',
-      '/analytics',
-      '/alerts',
-      '/reports',
-      '/cameras-management',
-      '/settings'
-    ];
-    return validRoutes.includes(path) ? path : '/login';
+    return VALID_ROUTES.includes(path) ? path : '/login';
   };
 
   const [currentRoute, setCurrentRoute] = useState(getInitialRoute());
@@ -46,20 +40,29 @@ export default function App() {
 
   // Synchronize browser history and route changes
   const navigate = (newRoute) => {
-    setCurrentRoute(newRoute);
-    if (window.location.pathname !== newRoute) {
-      window.history.pushState({}, '', newRoute);
+    const target = newRoute.startsWith('/') ? newRoute : `/${newRoute}`;
+    const destination = VALID_ROUTES.includes(target) ? target : '/dashboard';
+    setCurrentRoute(destination);
+    if (window.location.pathname !== destination) {
+      window.history.pushState({}, '', destination);
     }
   };
 
-  // Listen for browser back/forward buttons
+  // Listen for browser back/forward buttons, disallowing removed routes
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentRoute(window.location.pathname || '/login');
+      const path = window.location.pathname;
+      if (VALID_ROUTES.includes(path)) {
+        setCurrentRoute(path);
+      } else {
+        const fallback = currentOfficer ? '/dashboard' : '/login';
+        setCurrentRoute(fallback);
+        window.history.replaceState({}, '', fallback);
+      }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [currentOfficer]);
 
   const showNotification = (msg) => {
     setNotification(msg);
@@ -95,11 +98,12 @@ export default function App() {
     <div
       className={`font-scale-${fontScale}`}
       style={{
-        minHeight: '100vh',
+        height: '100vh',
         backgroundColor: 'transparent',
         color: '#071c36',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        overflow: 'hidden'
       }}
     >
       {/* Toast Notification Alert Banner */}
@@ -132,7 +136,7 @@ export default function App() {
       {/* STATE 1: CLEAN INDEPENDENT LOGIN PAGE              */}
       {/* ================================================== */}
       {isLoginPage ? (
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', height: '100vh', overflowY: 'auto' }}>
           {/* Dedicated Login Header (No dashboard navigation, no sidebar) */}
           <LoginHeader
             language={language}
@@ -153,10 +157,10 @@ export default function App() {
         </div>
       ) : (
         /* ================================================== */
-        /* STATE 2: MAIN NETRA APPLICATION (LEFT SIDEBAR)    */
+        /* STATE 2: MAIN NETRA APPLICATION (FIXED SIDEBAR)    */
         /* ================================================== */
-        <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
-          {/* Left Vertical Sidebar */}
+        <div style={{ display: 'flex', height: '100vh', width: '100%', overflow: 'hidden' }}>
+          {/* Left Vertical Sidebar — Fixed to left, full height, does not scroll with page content */}
           <Sidebar
             currentRoute={currentRoute}
             setRoute={navigate}
@@ -164,12 +168,14 @@ export default function App() {
             onLogout={handleLogout}
           />
 
-          {/* Main Workspace (To the Right of the Sidebar) */}
+          {/* Right Main Area — Dedicated vertical scrolling container */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 1,
+            height: '100%',
             minWidth: 0,
+            overflowY: 'auto',
             overflowX: 'hidden'
           }}>
             {/* Top Compact Government Header above main content */}
@@ -184,7 +190,7 @@ export default function App() {
               onLogout={handleLogout}
             />
 
-            {/* Main Content Area rendering active route */}
+            {/* Main Content Area rendering ONLY the 4 active approved modules */}
             <main style={{ flexGrow: 1, backgroundColor: 'transparent' }}>
               {(currentRoute === '/dashboard' || currentRoute === '/') && (
                 <DashboardPage
@@ -206,34 +212,12 @@ export default function App() {
                 <TrackingPage />
               )}
 
-              {currentRoute === '/analytics' && (
-                <AnalyticsPage />
-              )}
-
-              {currentRoute === '/alerts' && (
-                <AlertsPage
-                  onAddNotification={showNotification}
-                />
-              )}
-
-              {currentRoute === '/reports' && (
-                <ReportsPage
-                  onAddNotification={showNotification}
-                />
-              )}
-
-              {currentRoute === '/cameras-management' && (
-                <TelemetryPage />
-              )}
-
-              {currentRoute === '/settings' && (
-                <SettingsPage
-                  onAddNotification={showNotification}
-                />
+              {(currentRoute === '/video-testing' || currentRoute === '/live-video-testing') && (
+                <LiveVideoTestingPage setRoute={navigate} />
               )}
             </main>
 
-            {/* Government Footer */}
+            {/* Government Footer — Scrolls naturally with main content */}
             <Footer />
           </div>
         </div>

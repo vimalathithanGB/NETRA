@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { initialZones } from '../data/mockData';
 import { TrafficMap, CameraMarker, MapLegend } from '../components/gis';
 import {
   getCameras,

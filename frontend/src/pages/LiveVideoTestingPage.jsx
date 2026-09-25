@@ -121,7 +121,7 @@ export default function LiveVideoTestingPage({ setRoute }) {
   const handleLoadSampleVideo = async () => {
     try {
       setFileValidationErr(null);
-      // Fetch test.mp4 from backend or public assets
+      // Fetch sample corridor video from backend
       const sampleBlob = await fetch('/api/v1/video-testing/jobs/test-smoke-001/video')
         .then((r) => r.ok ? r.blob() : null)
         .catch(() => null);
@@ -131,13 +131,15 @@ export default function LiveVideoTestingPage({ setRoute }) {
         setSelectedFile(file);
         setUseSampleVideo(true);
       } else {
-        // Fallback: create mock upload with sample test name
-        const dummyFile = new File(['sample'], 'test.mp4', { type: 'video/mp4' });
-        setSelectedFile(dummyFile);
-        setUseSampleVideo(true);
+        setFileValidationErr('Sample corridor test video is not currently available from the server. Please upload an MP4 or AVI file directly.');
+        setSelectedFile(null);
+        setUseSampleVideo(false);
       }
     } catch (err) {
-      console.warn('Sample video load error:', err);
+      console.error('Sample video load error:', err);
+      setFileValidationErr('Failed to retrieve sample video from backend. Please upload a video file directly.');
+      setSelectedFile(null);
+      setUseSampleVideo(false);
     }
   };
 
